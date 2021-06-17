@@ -3,7 +3,7 @@ from os import name, system
 
 # for printing the board
 SYMBOLS = ".PNBRQKpnbrqk" if name == "nt" else \
-    ".\u2659\u2658\u2657\u2656\u2655\u2654\u265F\u265E\u265D\u265C\u265B\u265A"
+    " \u2659\u2658\u2657\u2656\u2655\u2654\u265F\u265E\u265D\u265C\u265B\u265A"
 
 # board index position => chess notation
 NOTATION = [
@@ -47,14 +47,36 @@ def user_input():
 
 
 def print_board(board):
-    system("cls" if name == "nt" else "clear")
-    count = 0 # count the number of squares printed
+    if name == "nt":
+        system("cls")
+        count = 0 # count the number of squares printed
+        for square in board:
+            if square != -1: # square is not outside of board
+                print(SYMBOLS[square], end=" ")
+                count += 1
+                if count % 8 == 0:
+                    print()
+    else:
+        print_color_board(board)
+    
+
+def print_color_board(board):
+    system("clear")
+    i = 0 # count the number of squares printed
+    row_count = 0
     for square in board:
         if square != -1: # square is not outside of board
+            if row_count % 2 == 0:
+                print("\033[107m" if i % 2 == 0 else "\033[106m", end="")
+            else:
+                print("\033[106m" if i % 2 == 0 else "\033[107m", end="")
+
             print(SYMBOLS[square], end=" ")
-            count += 1
-            if count % 8 == 0:
+            i += 1
+            if i % 8 == 0:
                 print()
+                row_count += 1
+    print("\033[0m")
 
 
 def print_moves(moves):
