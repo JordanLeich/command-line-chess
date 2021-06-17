@@ -64,6 +64,7 @@ def print_color_board(board):
     system("clear")
     i = 0 # count the number of squares printed
     row_count = 0
+    print(row_count + 1, end=" ")
     for square in board:
         if square != -1: # square is not outside of board
             if row_count % 2 == 0:
@@ -71,12 +72,14 @@ def print_color_board(board):
             else:
                 print("\033[106m" if i % 2 == 0 else "\033[107m", end="")
 
-            print(SYMBOLS[square], end=" ")
+            print(SYMBOLS[square], end=" \033[0m")
             i += 1
             if i % 8 == 0:
                 print()
                 row_count += 1
-    print("\033[0m")
+                if row_count < 8:
+                    print(row_count + 1, end=" ")
+    print("  a b c d e f g h")
 
 
 def print_moves(moves):
