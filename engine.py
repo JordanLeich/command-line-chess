@@ -69,6 +69,12 @@ def set_position(fen, moves):
 
 
 def find_best_move():
+    moves = gen_legal_moves()
+    best_move = random.choice(moves)
+    return NOTATION[best_move[0]] + NOTATION[best_move[1]] + best_move[2]
+
+
+def gen_legal_moves():
     global board
     global white
     global castling
@@ -92,8 +98,7 @@ def find_best_move():
 
         board = copy_board # unmake the move
 
-    best_move = random.choice(moves)
-    return NOTATION[best_move[0]] + NOTATION[best_move[1]] + best_move[2]
+    return moves
 
 
 def parse_fen(fen):
