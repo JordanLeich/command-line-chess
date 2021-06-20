@@ -64,7 +64,7 @@ def print_color_board(board):
     system("clear")
     i = 0 # count the number of squares printed
     row_count = 0
-    print(row_count + 1, end=" ")
+    print(8 - row_count, end=" ")
     for square in board:
         if square != -1: # square is not outside of board
             if row_count % 2 == 0:
@@ -78,7 +78,7 @@ def print_color_board(board):
                 print()
                 row_count += 1
                 if row_count < 8:
-                    print(row_count + 1, end=" ")
+                    print(8 - row_count, end=" ")
     print("  a b c d e f g h")
 
 
