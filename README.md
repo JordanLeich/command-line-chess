@@ -1,12 +1,12 @@
 # command-line-chess
 * chess.py and ui.py are the files for command-line chess.
 * run chess.py to play.
-* move format - <from square><to square><optional promotion piece>
+## move format
 * eg: e2e4
       e7e5
       e1g1
       a7a8q
-
+## UCI
 * uci.py and engine.py are the files used for implementing the
   UCI(Universal Chess Interface) protocol.
 * run uci.py to start the engine.
