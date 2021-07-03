@@ -1,7 +1,6 @@
 from ui import user_input, print_board
 
-
-EMPTY = 0 # empty square
+EMPTY = 0  # empty square
 
 W_P = 1  # white pawn
 W_N = 2  # white knight
@@ -13,28 +12,29 @@ W_K = 6  # white king
 B_P = 7  # black pawn
 B_N = 8  # black knight
 B_B = 9  # black bishop
-B_R = 10 # black rook
-B_Q = 11 # black queen
-B_K = 12 # black king
+B_R = 10  # black rook
+B_Q = 11  # black queen
+B_K = 12  # black king
 
 # castling moves
-W_KING_SIDE  = (95, 97, "")
+W_KING_SIDE = (95, 97, "")
 W_QUEEN_SIDE = (95, 93, "")
-B_KING_SIDE  = (25, 27, "")
+B_KING_SIDE = (25, 27, "")
 B_QUEEN_SIDE = (25, 23, "")
+
 
 def main():
     board = create_board()
-    white = True # current player, if False, player will be black
-    ep_sq = None # possible en passant capture square
+    white = True  # current player, if False, player will be black
+    ep_sq = None  # possible en passant capture square
 
-    # castling rights [white kingside, queenside, black kingside, queenside]
+    # castling rights [white king side, queen side, black king side, queen side]
     castling = [True, True, True, True]
-    half_moves = 0 # fifty-move rule counter
+    half_moves = 0  # fifty-move rule counter
 
-    # for detecting threefold repetition. Postion is defined by en_passant
+    # for detecting threefold repetition. Position is defined by en_passant
     # capture possibility, side to move, castling rights and piece placement
-    positions = {} # count of each position
+    positions = {}  # count of each position
     position = ""
 
     while True:
@@ -46,7 +46,7 @@ def main():
         moves = []
         king = W_K if white else B_K
         for move in pseudo_moves:
-            copy_board = board[:] # for unmaking the move later
+            copy_board = board[:]  # for unmaking the move later
             make_move(board, move, white, False)
 
             # find king index
@@ -54,14 +54,14 @@ def main():
                 if board[i] == king:
                     king_i = i
 
-            if not is_in_check(board, white, king_i): # legal move
+            if not is_in_check(board, white, king_i):  # legal move
                 moves.append(move)
 
                 # for detecting threefold repetition
                 if is_en_passant(board, move, ep_sq):
                     position += "e"
 
-            board = copy_board # unmake the move
+            board = copy_board  # unmake the move
 
         # for detecting threefold repetition
         position += "w" if white else "b"
@@ -85,7 +85,7 @@ def main():
 
         position = ""
 
-        if not moves: # Game over
+        if not moves:  # Game over
             king = W_K if white else B_K
 
             # find king index
@@ -100,11 +100,11 @@ def main():
             return
 
         for value in positions.values():
-            if value >= 3: # threefold repetition
+            if value >= 3:  # threefold repetition
                 print("Draw - threefold repetition")
                 return
 
-        if half_moves >= 100: # fifty-move rule
+        if half_moves >= 100:  # fifty-move rule
             print("Draw - fifty-move rule")
             return
 
@@ -122,7 +122,7 @@ def main():
 
         # fifty-move rule counter
         if board[from_sq] in [W_P, B_P] \
-            or (board[to_sq] != EMPTY and board[from_sq] != board[to_sq]):
+                or (board[to_sq] != EMPTY and board[from_sq] != board[to_sq]):
             # current move is pawn move or capture
             half_moves = 0
         else:
@@ -137,15 +137,15 @@ def main():
             ep_sq = None
 
         # set castling rights
-        if board[to_sq] in [W_K, B_K]: # king has moved
+        if board[to_sq] in [W_K, B_K]:  # king has moved
             if white:
                 castling[0] = False
                 castling[1] = False
             else:
                 castling[2] = False
                 castling[3] = False
-        
-        # if a rook is not in initial postion castling right is lost
+
+        # if a rook is not in initial position castling right is lost
         if board[98] != W_R:
             castling[0] = False
         if board[91] != W_R:
@@ -155,24 +155,24 @@ def main():
         if board[21] != B_R:
             castling[3] = False
 
-        white = not white # change player
+        white = not white  # change player
 
 
 def create_board():
     # out of the board square  = -1
     board = [
-        -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, -1,
-        -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, -1,
-        -1,   B_R,   B_N,   B_B,   B_Q,   B_K,   B_B,   B_N,   B_R, -1,
-        -1,   B_P,   B_P,   B_P,   B_P,   B_P,   B_P,   B_P,   B_P, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, B_R, B_N, B_B, B_Q, B_K, B_B, B_N, B_R, -1,
+        -1, B_P, B_P, B_P, B_P, B_P, B_P, B_P, B_P, -1,
         -1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, -1,
         -1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, -1,
         -1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, -1,
         -1, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, -1,
-        -1,   W_P,   W_P,   W_P,   W_P,   W_P,   W_P,   W_P,   W_P, -1,
-        -1,   W_R,   W_N,   W_B,   W_Q,   W_K,   W_B,   W_N,   W_R, -1,
-        -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, -1,
-        -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, -1,
+        -1, W_P, W_P, W_P, W_P, W_P, W_P, W_P, W_P, -1,
+        -1, W_R, W_N, W_B, W_Q, W_K, W_B, W_N, W_R, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     ]
 
     return board
@@ -189,11 +189,11 @@ def gen_moves(board, white, castling, ep_sq):
     offsets_list = [
         None,
         None,
-        [12, 21, 19, 8, -12, -21, -19, -8], # knight
-        [11, 9, -11, -9], # bishop
-        [10, -1, -10, 1], # rook
-        [10, -1, -10, 1, 11, 9, -11, -9], # queen
-        [10, -1, -10, 1, 11, 9, -11, -9] # king
+        [12, 21, 19, 8, -12, -21, -19, -8],  # knight
+        [11, 9, -11, -9],  # bishop
+        [10, -1, -10, 1],  # rook
+        [10, -1, -10, 1, 11, 9, -11, -9],  # queen
+        [10, -1, -10, 1, 11, 9, -11, -9]  # king
     ]
 
     # loop over all indices in the board
@@ -202,10 +202,10 @@ def gen_moves(board, white, castling, ep_sq):
         if piece in [-1, EMPTY] or piece in opposite_pieces:
             continue
 
-        if piece in [W_P, B_P]: # found a pawn
+        if piece in [W_P, B_P]:  # found a pawn
             moves.extend(gen_pawn_moves(board, white, i, ep_sq))
 
-        else: # found a pice other than pawn
+        else:  # found a piece other than pawn
             offsets = offsets_list[piece] if white else offsets_list[piece - 6]
 
             from_sq = i
@@ -213,9 +213,9 @@ def gen_moves(board, white, castling, ep_sq):
                 temp_sq = from_sq
                 while True:
                     to_sq = temp_sq + offset
-                    if board[to_sq] == -1: # to_sq is off the board
+                    if board[to_sq] == -1:  # to_sq is off the board
                         break
-                    elif board[to_sq] in pieces: # to_sq is same color piece
+                    elif board[to_sq] in pieces:  # to_sq is same color piece
                         break
                     elif board[to_sq] in opposite_pieces:
                         moves.append((from_sq, to_sq, ""))
@@ -249,7 +249,7 @@ def gen_pawn_moves(board, white, i, ep_sq):
 
     from_sq = i
 
-    to_sq = from_sq + normal_offsets[0] # single square move
+    to_sq = from_sq + normal_offsets[0]  # single square move
     if board[to_sq] == EMPTY:
         if to_sq in last_rank:
             for promotion in "nbrq":
@@ -258,14 +258,14 @@ def gen_pawn_moves(board, white, i, ep_sq):
         else:
             moves.append((from_sq, to_sq, promotion))
 
-    if from_sq in second_rank: # double square move
+    if from_sq in second_rank:  # double square move
         to_sq = from_sq + normal_offsets[1]
         if board[to_sq] == EMPTY:
             moves.append((from_sq, to_sq, promotion))
 
     for offset in capture_offsets:
         to_sq = from_sq + offset
-        if board[to_sq] in opposite_pieces: # capture
+        if board[to_sq] in opposite_pieces:  # capture
             if to_sq in last_rank:
                 for promotion in "nbrq":
                     moves.append((from_sq, to_sq, promotion))
@@ -273,7 +273,7 @@ def gen_pawn_moves(board, white, i, ep_sq):
             else:
                 moves.append((from_sq, to_sq, promotion))
 
-        if ep_sq: # current move may be en passant capture
+        if ep_sq:  # current move may be en passant capture
             if to_sq == ep_sq:
                 moves.append((from_sq, to_sq, promotion))
 
@@ -284,19 +284,17 @@ def gen_castling_moves(board, white, castling):
     moves = []
     if white:
         if castling[0] and (board[96] == EMPTY and board[97] == EMPTY):
-            if not(is_in_check(board,white,95) or is_in_check(board,white,96)):
+            if not (is_in_check(board, white, 95) or is_in_check(board, white, 96)):
                 moves.append(W_KING_SIDE)
-        if castling[1] and (board[94] == EMPTY and board[93] == EMPTY and \
-            board[92] == EMPTY):
-            if not(is_in_check(board,white,95) or is_in_check(board,white,94)):
+        if castling[1] and (board[94] == EMPTY and board[93] == EMPTY and board[92] == EMPTY):
+            if not (is_in_check(board, white, 95) or is_in_check(board, white, 94)):
                 moves.append(W_QUEEN_SIDE)
     else:
         if castling[2] and (board[26] == EMPTY and board[27] == EMPTY):
-            if not(is_in_check(board,white,25) or is_in_check(board,white,26)):
+            if not (is_in_check(board, white, 25) or is_in_check(board, white, 26)):
                 moves.append(B_KING_SIDE)
-        if castling[3] and (board[24] == EMPTY and board[23] == EMPTY and \
-            board[22] == EMPTY):
-            if not(is_in_check(board,white,25) or is_in_check(board,white,24)):
+        if castling[3] and (board[24] == EMPTY and board[23] == EMPTY and board[22] == EMPTY):
+            if not (is_in_check(board, white, 25) or is_in_check(board, white, 24)):
                 moves.append(B_QUEEN_SIDE)
 
     return moves
@@ -315,7 +313,7 @@ def is_in_check(board, white, i):
     from_sq = i
     for offset in capture_offsets:
         to_sq = from_sq + offset
-        if board[to_sq] == opposite_pawn: # to_sq is opposite pawn
+        if board[to_sq] == opposite_pawn:  # to_sq is opposite pawn
             return True
 
     # check if a king could capture the king
@@ -324,7 +322,7 @@ def is_in_check(board, white, i):
     from_sq = i
     for offset in offsets:
         to_sq = from_sq + offset
-        if board[to_sq] == opposite_king: # to_sq is opposite king
+        if board[to_sq] == opposite_king:  # to_sq is opposite king
             return True
 
     # check if a knight could capture the king
@@ -333,7 +331,7 @@ def is_in_check(board, white, i):
     from_sq = i
     for offset in offsets:
         to_sq = from_sq + offset
-        if board[to_sq] == opposite_knight: # to_sq is opposite knight
+        if board[to_sq] == opposite_knight:  # to_sq is opposite knight
             return True
 
     # check if a rook or queen could capture the king
@@ -344,12 +342,12 @@ def is_in_check(board, white, i):
         temp_sq = from_sq
         while True:
             to_sq = temp_sq + offset
-            if board[to_sq] == -1: # to_sq is off the board
+            if board[to_sq] == -1:  # to_sq is off the board
                 break
-            elif board[to_sq] in pieces: # to_sq is same color piece
+            elif board[to_sq] in pieces:  # to_sq is same color piece
                 break
             elif board[to_sq] in opposite_pieces:
-                if board[to_sq] in opposite_qr: # to_sq: opposite queen or rook
+                if board[to_sq] in opposite_qr:  # to_sq: opposite queen or rook
                     return True
                 break
             temp_sq = to_sq
@@ -362,12 +360,12 @@ def is_in_check(board, white, i):
         temp_sq = from_sq
         while True:
             to_sq = temp_sq + offset
-            if board[to_sq] == -1: # to_sq is off the board
+            if board[to_sq] == -1:  # to_sq is off the board
                 break
-            elif board[to_sq] in pieces: # to_sq is same color piece
+            elif board[to_sq] in pieces:  # to_sq is same color piece
                 break
             elif board[to_sq] in opposite_pieces:
-                if board[to_sq] in opposite_qb: #to_sq:opposite queen or bishop
+                if board[to_sq] in opposite_qb:  # to_sq:opposite queen or bishop
                     return True
                 break
             temp_sq = to_sq
@@ -406,19 +404,19 @@ def make_move(board, move, white, ep_sq):
     # castling
     elif board[to_sq] in [W_K, B_K] and abs(to_sq - from_sq) == 2:
         # move the rook to the castled position
-        if to_sq == 97: # white kingside
+        if to_sq == 97:  # white king side
             board[96] = W_R
             board[98] = EMPTY
-        elif to_sq == 93: # white queenside
+        elif to_sq == 93:  # white queen side
             board[94] = W_R
             board[91] = EMPTY
-        elif to_sq == 27: # black kingside
+        elif to_sq == 27:  # black king side
             board[26] = B_R
             board[28] = EMPTY
-        elif to_sq == 23: # black queenside
+        elif to_sq == 23:  # black queen side
             board[24] = B_R
             board[21] = EMPTY
 
-   
+
 if __name__ == "__main__":
     main()

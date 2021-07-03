@@ -1,0 +1,12 @@
+main.spec
+dist
+build
+build/main/
+build/main
+.idea
+__pycache__
+.pytest_cache
+venv
+.env
+.venv
+key.json

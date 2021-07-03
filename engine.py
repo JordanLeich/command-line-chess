@@ -3,18 +3,17 @@ from chess import B_K, B_P, B_R, W_K, W_P, W_R, \
     gen_moves, is_in_check, make_move
 from ui import INDICES, NOTATION
 
-
 # fen => internal piece representation
 PIECES = {
-    "P":  1,
-    "N":  2,
-    "B":  3,
-    "R":  4,
-    "Q":  5,
-    "K":  6,
-    "p":  7,
-    "n":  8,
-    "b":  9,
+    "P": 1,
+    "N": 2,
+    "B": 3,
+    "R": 4,
+    "Q": 5,
+    "K": 6,
+    "p": 7,
+    "n": 8,
+    "b": 9,
     "r": 10,
     "q": 11,
     "k": 12
@@ -47,15 +46,15 @@ def set_position(fen, moves):
             ep_sq = None
 
         # set castling rights
-        if board[to_sq] in [W_K, B_K]: # king has moved
+        if board[to_sq] in [W_K, B_K]:  # king has moved
             if white:
                 castling[0] = False
                 castling[1] = False
             else:
                 castling[2] = False
                 castling[3] = False
-        
-        # if a rook is not in initial postion castling right is lost
+
+        # if a rook is not in initial position castling right is lost
         if board[98] != W_R:
             castling[0] = False
         if board[91] != W_R:
@@ -65,7 +64,7 @@ def set_position(fen, moves):
         if board[21] != B_R:
             castling[3] = False
 
-        white = not white # change player
+        white = not white  # change player
 
 
 def find_best_move():
@@ -85,7 +84,7 @@ def gen_legal_moves():
     moves = []
     king = W_K if white else B_K
     for move in pseudo_moves:
-        copy_board = board[:] # for unmaking the move later
+        copy_board = board[:]  # for unmaking the move later
         make_move(board, move, white, False)
 
         # find king index
@@ -93,10 +92,10 @@ def gen_legal_moves():
             if board[i] == king:
                 king_i = i
 
-        if not is_in_check(board, white, king_i): # legal move
+        if not is_in_check(board, white, king_i):  # legal move
             moves.append(move)
 
-        board = copy_board # unmake the move
+        board = copy_board  # unmake the move
 
     return moves
 
@@ -121,7 +120,7 @@ def parse_fen(fen):
 
     ep_sq = None if fields[3] == "-" else INDICES[fields[3]]
 
-    return (board, white, castling, ep_sq)
+    return board, white, castling, ep_sq
 
 
 def create_board(position):
